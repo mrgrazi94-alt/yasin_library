@@ -10,7 +10,7 @@ app.secret_key = 'yasin_library_secret_key'
 # ⭐ هذا السطر ضفناه حتى السيرفر يندل مجلد المشروع بالضبط (مهم لرفع الصور)
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///library.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/library.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -290,3 +290,4 @@ def api_checkout():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+    app = app
