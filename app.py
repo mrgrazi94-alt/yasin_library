@@ -1,20 +1,24 @@
 import os
-from flask import Flask
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.utils import secure_filename
+import uuid
 
 app = Flask(__name__)
 app.secret_key = 'yasin_library_secret_key'
 
-# استخدام مجلد tmp الخاص بـ Vercel
-db_path = os.path.join('/tmp', 'library.db')
+# تهيئة مسار قاعدة البيانات ببيئة tmp
+db_path = '/tmp/library.db'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# إنشاء الجداول تلقائياً عند التشغيل
-with app.app_context():
-    db.create_all()
+# إنشاء الجداول عند أوّل طلب فقط لضمان استقرار Vercel
+@app.before_request
+def create_tables():
+    if not os.path.exists(db_path):
+        db.create_all()
 
 ADMIN_PASSWORD = "123"
 
