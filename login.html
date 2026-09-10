@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - الإدارة</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0f2027; display: flex; justify-content: center; align-items: center; height: 100vh; direction: rtl; }
+        
+        .login-box { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 400px; text-align: center; border-top: 5px solid #d4af37; }
+        .logo-img { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 2px solid #d4af37; margin-bottom: 15px; padding: 2px; }
+        
+        h2 { color: #0f2027; margin-bottom: 25px; font-size: 1.8rem; }
+        
+        .form-group { margin-bottom: 20px; text-align: right; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #2c3e50; font-size: 0.95rem; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-size: 1rem; transition: 0.3s; background: #f9f9f9; }
+        .form-control:focus { border-color: #d4af37; box-shadow: 0 0 5px rgba(212, 175, 55, 0.3); background: white; }
+        
+        .submit-btn { background: #d4af37; color: #0f2027; width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .submit-btn:hover { background: #0f2027; color: white; }
+        
+        .back-link { display: block; margin-top: 25px; color: #7f8c8d; text-decoration: none; font-size: 0.95rem; font-weight: bold; transition: 0.2s; }
+        .back-link:hover { color: #d4af37; }
+        
+        /* رسائل الخطأ (مثل كلمة المرور غير صحيحة) */
+        .flashes { list-style: none; padding: 0; margin-bottom: 15px; }
+        .flashes li { background: #fdf0ed; color: #e74c3c; padding: 12px; border-radius: 8px; font-size: 0.9rem; margin-bottom: 5px; font-weight: bold; border: 1px solid #fadbd8; }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <!-- الشعار -->
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="شعار المكتبة" class="logo-img" onerror="this.src='https://via.placeholder.com/80?text=لوجو'">
+        
+        <h2>تسجيل الدخول للإدارة</h2>
+        
+        <!-- كود إظهار رسائل الخطأ في حال كتب الباسورد غلط -->
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for message in messages %}
+              <li>⚠️ {{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label>اسم المستخدم:</label>
+                <input type="text" name="username" class="form-control" required placeholder="أدخل اسم المستخدم...">
+            </div>
+            <div class="form-group">
+                <label>كلمة المرور:</label>
+                <input type="password" name="password" class="form-control" required placeholder="أدخل كلمة المرور...">
+            </div>
+            <button type="submit" class="submit-btn">تسجيل الدخول</button>
+        </form>
+        
+        <a href="/" class="back-link">🏠 العودة للمتجر</a>
+    </div>
+
+</body>
+</html>

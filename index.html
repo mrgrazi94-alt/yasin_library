@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مكتبة ياسين المولى - المتجر</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f8f9fa; color: #333; }
+        
+        /* شريط علوي فخم */
+        header { background: #0f2027; color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #d4af37; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .logo-container { display: flex; align-items: center; gap: 15px; cursor: pointer; }
+        .logo-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #d4af37; background: white; }
+        .logo-text { font-size: 1.8rem; font-weight: bold; }
+        .logo-text span { color: #d4af37; }
+        
+        .cart-btn { background: transparent; color: #d4af37; border: 2px solid #d4af37; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 1.1rem; text-decoration: none; display: inline-block;}
+        .cart-btn:hover { background: #d4af37; color: #0f2027; }
+
+        /* رسائل النظام (Flashes) */
+        .flashes { list-style: none; padding: 15px 5%; background: #e8f8f5; color: #27ae60; text-align: center; font-weight: bold; font-size: 1.1rem; border-bottom: 2px solid #27ae60; margin: 0; }
+        .flashes li { margin: 5px 0; }
+
+        /* منطقة البحث والترحيب */
+        .hero { background: linear-gradient(rgba(15, 32, 39, 0.9), rgba(15, 32, 39, 0.9)); padding: 60px 20px; text-align: center; color: white; border-bottom: 5px solid #d4af37; }
+        .hero h1 { font-size: 2.5rem; color: #d4af37; margin-bottom: 15px; }
+        .hero p { font-size: 1.2rem; max-width: 600px; margin: 0 auto; line-height: 1.6; color: #e0e0e0; }
+        .search-input { width: 100%; max-width: 600px; padding: 15px 25px; border-radius: 30px; border: none; font-size: 1.1rem; outline: none; margin-top: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+        /* أزرار الأقسام الفخمة */
+        .categories-container { text-align: center; padding: 30px 20px; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 40px; }
+        .categories-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; max-width: 1100px; margin: 0 auto; }
+        .category-btn { background: white; color: #0f2027; border: 2px solid #0f2027; padding: 10px 20px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.95rem; }
+        .category-btn:hover, .category-btn.active { background: #0f2027; color: #d4af37; border-color: #0f2027; }
+
+        .section-title { text-align: center; font-size: 2rem; color: #0f2027; margin-bottom: 30px; }
+
+        /* شبكة المنتجات */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto 50px auto; padding: 0 20px; }
+        .product-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08); transition: 0.3s; display: flex; flex-direction: column; border: 1px solid #eee; }
+        .product-card:hover { transform: translateY(-7px); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2); }
+        
+        .product-img { width: 100%; height: 250px; object-fit: cover; border-bottom: 3px solid #d4af37; }
+        
+        .product-info { padding: 20px; text-align: center; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
+        .product-title { font-size: 1.3rem; color: #0f2027; margin-bottom: 10px; font-weight: bold; }
+        .product-price { font-size: 1.2rem; color: #27ae60; font-weight: bold; margin-bottom: 20px; }
+        
+        .add-to-cart-btn { background: #0f2027; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%; font-weight: bold; font-size: 1rem; text-decoration: none; display: block; }
+        .add-to-cart-btn:hover { background: #d4af37; color: #0f2027; }
+
+        /* حالة عدم وجود نتائج */
+        .empty-state { text-align: center; padding: 40px; font-size: 1.5rem; color: #7f8c8d; display: none; grid-column: 1 / -1; }
+
+        /* ترتيب الموبايل */
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 15px; text-align: center; padding: 20px 10px; }
+            .hero h1 { font-size: 2rem; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+            .product-img { height: 180px; }
+            .product-title { font-size: 1.1rem; }
+            .category-btn { padding: 8px 15px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <!-- ضفنا المعرف السري الخاص بيك (secretAdminBtn) -->
+        <div id="secretAdminBtn" class="logo-container">
+            <img src="{{ url_for('static', filename='logo.jpg') }}" alt="شعار المكتبة" class="logo-img" onerror="this.src='https://via.placeholder.com/60?text=لوجو'">
+            <div class="logo-text">مكتبة <span>ياسين المولى</span></div>
+        </div>
+        <a href="/cart" class="cart-btn">🛒 السلة</a>
+    </header>
+
+    <!-- رسائل التأكيد -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flashes">
+        {% for message in messages %}
+          <li>✅ {{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <section class="hero">
+        <h1>أهلاً بك في مكتبة ياسين المولى</h1>
+        <p>اكتشف عالم المعرفة! نوفر لك أفضل الكتب والمستلزمات بأسعار تنافسية وتجربة تسوق سلسة.</p>
+        <!-- شريط البحث السريع مالتك -->
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 ابحث عن كتاب، قرطاسية، أو أي منتج..." onkeyup="filterProducts()">
+    </section>
+
+    <!-- شريط الأقسام الخاص بيك بنفس الأسماء بالضبط -->
+    <div class="categories-container">
+        <div class="categories-bar">
+            <button class="category-btn active" onclick="setCategory('all', this)">الكل</button>
+            <button class="category-btn" onclick="setCategory('كتب', this)">كتب استنساخ لجميع المراحل الدراسية</button>
+            <button class="category-btn" onclick="setCategory('قرطاسية', this)">القرطاسية</button>
+            <button class="category-btn" onclick="setCategory('هدايا', this)">الهدايا</button>
+            <button class="category-btn" onclick="setCategory('ملازم جاهزة', this)">الملازم الجاهزة</button>
+            <button class="category-btn" onclick="setCategory('العاب', this)">العاب</button>
+            <button class="category-btn" onclick="setCategory('مستلزمات مكتبية', this)">مسلتزمات مكتبية</button>
+            <button class="category-btn" onclick="setCategory('ملازم استنساخ', this)">ملازم استنساخ لجميع المراحل</button>
+            <button class="category-btn" onclick="setCategory('دفاتر', this)">الدفاتر</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title">أحدث المنتجات</h2>
+        
+        <div class="products-grid" id="productsContainer">
+            {% if products %}
+                {% for product in products %}
+                <!-- داتا البحث والفلترة موجودة هنا -->
+                <div class="product-card" data-name="{{ product.name }}" data-category="{{ product.category | default('كتب', true) }}">
+                    <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" class="product-img" onerror="this.src='https://via.placeholder.com/250?text=صورة+المنتج'">
+                    <div class="product-info">
+                        <div>
+                            <h3 class="product-title">{{ product.name }}</h3>
+                            <div class="product-price">{{ product.price }} د.ع</div>
+                        </div>
+                        <!-- رابط الإضافة للسلة الخاص بيك مع التصميم الفخم -->
+                        <a href="/add-to-cart/{{ product.id }}" class="add-to-cart-btn">➕ أضف إلى السلة</a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div style="grid-column: 1 / -1; text-align: center; padding: 30px;">
+                    <p style="font-size: 3rem; margin-bottom: 15px;">📚</p>
+                    <p>لا توجد منتجات حالياً.</p>
+                </div>
+            {% endif %}
+            
+            <!-- رسالة تظهر إذا كان البحث لا يطابق أي منتج -->
+            <div id="noResultsMsg" class="empty-state">
+                <p style="font-size: 3rem; margin-bottom: 15px;">🧐</p>
+                <p>لم نجد أي منتج يطابق بحثك!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- سكربت الفلترة الذكية (بحث + أقسام + البوابة السرية) -->
+    <script>
+        let currentCategory = 'all';
+
+        // دالة تغيير القسم
+        function setCategory(category, btnElement) {
+            currentCategory = category;
+            
+            // تغيير لون الزر الفعال
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            
+            filterProducts(); // تشغيل الفلتر
+        }
+
+        // دالة البحث والفلترة معاً
+        function filterProducts() {
+            let searchInput = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.querySelectorAll('.product-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                let name = card.getAttribute('data-name').toLowerCase();
+                let cat = card.getAttribute('data-category');
+
+                // شرط البحث (الاسم يطابق + القسم يطابق)
+                let matchesSearch = name.includes(searchInput);
+                let matchesCategory = (currentCategory === 'all' || cat === currentCategory);
+
+                if (matchesSearch && matchesCategory) {
+                    card.style.display = 'flex'; // إظهار الكارت
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none'; // إخفاء الكارت
+                }
+            });
+
+            // إظهار رسالة "لا يوجد نتائج" إذا اختفت كل الكروت
+            document.getElementById('noResultsMsg').style.display = (visibleCount === 0 && cards.length > 0) ? 'block' : 'none';
+        }
+
+        // كود البوابة السرية للوحة التحكم (3 ضغطات على الشعار)
+        let clickCount = 0;
+        let clickTimer;
+        document.getElementById('secretAdminBtn').addEventListener('click', function() {
+            clickCount++; 
+            if (clickCount === 3) window.location.href = '/login';
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(function() { clickCount = 0; }, 1500);
+        });
+    </script>
+</body>
+</html>

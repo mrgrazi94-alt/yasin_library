@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تم الطلب بنجاح - مكتبة ياسين المولى</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f6f9; color: #333; direction: rtl; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* الشريط العلوي */
+        header { background: #0f2027; color: white; padding: 15px 30px; display: flex; justify-content: center; align-items: center; border-bottom: 3px solid #d4af37; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .logo-container { display: flex; align-items: center; gap: 12px; }
+        .logo-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #d4af37; background-color: white; }
+        .logo-text { font-size: 1.8rem; font-weight: bold; color: #ffffff; }
+        .logo-text span { color: #d4af37; }
+        
+        /* محتوى صفحة النجاح */
+        .container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        
+        .success-card { background: white; border-radius: 15px; padding: 40px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.08); max-width: 500px; width: 100%; border-top: 5px solid #27ae60; animation: popIn 0.5s ease-out; }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .success-icon { font-size: 5rem; color: #27ae60; margin-bottom: 20px; }
+        .success-title { font-size: 2rem; color: #0f2027; margin-bottom: 15px; font-weight: bold; }
+        .success-msg { font-size: 1.1rem; color: #7f8c8d; line-height: 1.6; margin-bottom: 30px; }
+        
+        .back-btn { display: inline-block; background: #0f2027; color: white; text-decoration: none; padding: 15px 30px; border-radius: 30px; font-weight: bold; font-size: 1.2rem; transition: 0.3s; box-shadow: 0 4px 15px rgba(15, 32, 39, 0.2); }
+        .back-btn:hover { background: #d4af37; color: #0f2027; transform: translateY(-3px); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='logo.jpg') }}" alt="شعار المكتبة" class="logo-img" onerror="this.src='https://via.placeholder.com/55?text=لوجو'">
+            <div class="logo-text">مكتبة <span>ياسين المولى</span></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="success-card">
+            <div class="success-icon">🎉✅</div>
+            <h1 class="success-title">تم استلام طلبك بنجاح!</h1>
+            <p class="success-msg">
+                شكراً لتسوقك من مكتبة ياسين المولى.<br>
+                لقد قمنا بتسجيل طلبك، وسيقوم فريقنا بالتواصل معك قريباً لتأكيد التفاصيل وموعد التوصيل.
+            </p>
+            <a href="/" class="back-btn">🏠 العودة للصفحة الرئيسية</a>
+        </div>
+    </div>
+
+</body>
+</html>
