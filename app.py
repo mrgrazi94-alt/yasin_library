@@ -1,18 +1,20 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.utils import secure_filename
-import uuid
 
 app = Flask(__name__)
 app.secret_key = 'yasin_library_secret_key'
 
-# ⭐ هذا السطر ضفناه حتى السيرفر يندل مجلد المشروع بالضبط (مهم لرفع الصور)
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/library.db'
+# استخدام مجلد tmp الخاص بـ Vercel
+db_path = os.path.join('/tmp', 'library.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
+
+# إنشاء الجداول تلقائياً عند التشغيل
+with app.app_context():
+    db.create_all()
 
 ADMIN_PASSWORD = "123"
 
