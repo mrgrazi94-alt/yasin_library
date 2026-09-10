@@ -1,19 +1,24 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.utils import secure_filename
-import uuid
 
-app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app = Flask(__name__, template_folder=BASE_DIR, static_folder=os.path.join(BASE_DIR, 'static'))
 app.secret_key = 'yasin_library_secret_key'
 
-# تحديد مسار قاعدة البيانات في مجلد tmp
+# استخدام مجلد tmp الخاص بـ Vercel
 db_path = os.path.join('/tmp', 'library.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+with app.app_context():
+    try:
+        db.create_all()
+    except Exception as e:
+        print("Database creation error:", e)
 # إنشاء الجداول عند بدء تشغيل التطبيق
 with app.app_context():
     try:
