@@ -7,18 +7,19 @@ import uuid
 app = Flask(__name__)
 app.secret_key = 'yasin_library_secret_key'
 
-# تهيئة مسار قاعدة البيانات ببيئة tmp
-db_path = '/tmp/library.db'
+# تحديد مسار قاعدة البيانات في مجلد tmp
+db_path = os.path.join('/tmp', 'library.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# إنشاء الجداول عند أوّل طلب فقط لضمان استقرار Vercel
-@app.before_request
-def create_tables():
-    if not os.path.exists(db_path):
+# إنشاء الجداول عند بدء تشغيل التطبيق
+with app.app_context():
+    try:
         db.create_all()
+    except Exception as e:
+        print("DB Error:", e)
 
 ADMIN_PASSWORD = "123"
 
