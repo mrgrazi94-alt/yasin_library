@@ -9,15 +9,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-      - run: flutter pub get
-        working-directory: yasin_library_app
-      - run: flutter build apk --release
-        working-directory: yasin_library_app
-      - uses: actions/upload-artifact@v3
+
+      - name: Find and Build Flutter App
+        run: |
+          # البحث عن المجلد الذي يحتوي على pubspec.yaml والتشغيل داخله
+          FLUTTER_DIR=$(find . -maxdepth 2 -name "pubspec.yaml" -exec dirname {} \;)
+          echo "Found Flutter app at: $FLUTTER_DIR"
+          cd "$FLUTTER_DIR"
+          flutter pub get
+          flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: release-apk
-          path: yasin_library_app/build/app/outputs/flutter-apk/app-release.apk
+          path: "**/build/app/outputs/flutter-apk/app-release.apk"
