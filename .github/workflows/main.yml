@@ -1,0 +1,23 @@
+name: Build Flutter APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - run: flutter pub get
+        working-directory: yasin_library_app
+      - run: flutter build apk --release
+        working-directory: yasin_library_app
+      - uses: actions/upload-artifact@v3
+        with:
+          name: release-apk
+          path: yasin_library_app/build/app/outputs/flutter-apk/app-release.apk
